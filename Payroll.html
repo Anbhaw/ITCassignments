@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Calculator</title>
+    <style>
+        html {
+            height: 100%;
+            overflow: hidden;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            position: relative;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+            width: 80%;
+            max-width: 800px;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            margin: 5px 0;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div id="background"></div>
+    <div class="container">
+        <h1>Payroll Calculator</h1>
+        
+        <table id="payrollTable">
+            <thead>
+                <tr>
+                    <th>Employee No.</th>
+                    <th>Employee Name</th>
+                    <th>Days Worked</th>
+                    <th>Daily Rate</th>
+                    <th>Gross Pay</th>
+                    <th>Deduction</th>
+                    <th>Net Pay</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added here dynamically -->
+            </tbody>
+        </table>
+
+        <h2>Add Employee</h2>
+        <div>
+            <input type="number" id="empNo" placeholder="Employee No.">
+            <input type="text" id="empName" placeholder="Employee Name">
+            <input type="number" id="daysWorked" placeholder="Days Worked">
+            <input type="number" id="dailyRate" placeholder="Daily Rate">
+            <input type="number" id="deduction" placeholder="Deduction">
+            <button onclick="addEmployee()">Add Employee</button>
+        </div>
+
+        <h2>Delete Employee</h2>
+        <div>
+            <input type="number" id="deleteEmpNo" placeholder="Employee No.">
+            <button onclick="deleteEmployee()">Delete</button>
+            <button onclick="deleteAllEmployees()">Delete All</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        function addEmployee() {
+            const empNo = document.getElementById('empNo').value;
+            const empName = document.getElementById('empName').value;
+            const daysWorked = parseFloat(document.getElementById('daysWorked').value);
+            const dailyRate = parseFloat(document.getElementById('dailyRate').value);
+            const deduction = parseFloat(document.getElementById('deduction').value);
+            const grossPay = daysWorked * dailyRate;
+            const netPay = grossPay - deduction;
+
+            if (empNo && empName && !isNaN(daysWorked) && !isNaN(dailyRate) && !isNaN(deduction)) {
+                const table = document.getElementById('payrollTable').getElementsByTagName('tbody')[0];
+                const newRow = table.insertRow();
+
+                newRow.innerHTML = `
+                    <td>${empNo}</td>
+                    <td>${empName}</td>
+                    <td>${daysWorked.toFixed(2)}</td>
+                    <td>${dailyRate.toFixed(2)}</td>
+                    <td>${grossPay.toFixed(2)}</td>
+                    <td>${deduction.toFixed(2)}</td>
+                    <td>${netPay.toFixed(2)}</td>
+                `;
+            } else {
+                alert('Please fill in all fields with valid data.');
+            }
+        }
+
+        function deleteEmployee() {
+            const deleteEmpNo = document.getElementById('deleteEmpNo').value;
+            const table = document.getElementById('payrollTable').getElementsByTagName('tbody')[0];
+            for (let i = 0; i < table.rows.length; i++) {
+                if (table.rows[i].cells[0].innerText == deleteEmpNo) {
+                    table.deleteRow(i);
+                    return;
+                }
+            }
+            alert('Employee not found.');
+        }
+
+        function deleteAllEmployees() {
+            const table = document.getElementById('payrollTable').getElementsByTagName('tbody')[0];
+            while (table.rows.length > 0) {
+                table.deleteRow(0);
+            }
+        }
+
+        // Initialize the scene, camera and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('background').appendChild(renderer.domElement);
+
+        // Create the sun
+        const sunGeometry = new THREE.SphereGeometry(50, 32, 32);
+        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFDB813 });
+        const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+        scene.add(sun);
+
+        // Create the planet
+        const planetGeometry = new THREE.SphereGeometry(20, 32, 32);
+        const planetMaterial = new THREE.MeshBasicMaterial({ color: 0x1E90FF });
+        const planet = new THREE.Mesh(planetGeometry, planetMaterial);
+        scene.add(planet);
+
+        // Set initial positions
+        planet.position.x = 200;
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate the planet around the sun
+            planet.position.x = 200 * Math.cos(Date.now() * 0.001);
+            planet.position.z = 200 * Math.sin(Date.now() * 0.001);
+
+            renderer.render(scene, camera);
+        }
+
+        // Adjust to window resize
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+
+        animate();
+    </script>
+</body>
+</html>
