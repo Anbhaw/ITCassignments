@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator for First N Natural Numbers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .container {
+            position: relative;
+            padding: 20px;
+            background-color: black;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+            z-index: 1;
+            border: 2px solid transparent;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5), 0 0 40px rgba(0, 191, 255, 0.5), 0 0 60px rgba(0, 191, 255, 0.5);
+            background: linear-gradient(black, black) padding-box, 
+                        linear-gradient(45deg, #00bfff, #1e90ff, #4169e1, #00ced1, #4682b4) border-box;
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 191, 255, 0.5), 0 0 40px rgba(0, 191, 255, 0.5), 0 0 60px rgba(0, 191, 255, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(0, 191, 255, 0.7), 0 0 80px rgba(0, 191, 255, 0.7), 0 0 120px rgba(0, 191, 255, 0.7);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(0, 191, 255, 0.5), 0 0 40px rgba(0, 191, 255, 0.5), 0 0 60px rgba(0, 191, 255, 0.5);
+            }
+        }
+
+        .content h1 {
+            color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            font-size: 80px;
+            text-align: center;
+        }
+
+        .box ul {
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            z-index: 0;
+        }
+
+        .box ul li {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            list-style: none;
+            opacity: 0;
+            background: radial-gradient(deepskyblue, transparent, transparent);
+            bottom: 0;
+            animation: animate 15s linear infinite;
+        }
+
+        .box ul li:nth-child(2) {
+            left: 37vw;
+            animation-delay: 2s;
+        }
+
+        .box ul li:nth-child(3) {
+            left: 25vw;
+            animation-delay: 4s;
+        }
+
+        .box ul li:nth-child(4) {
+            left: 60vw;
+            animation-delay: 6s;
+        }
+
+        .box ul li:nth-child(5) {
+            left: 75vw;
+            animation-delay: 4s;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+                bottom: 0;
+            }
+            100% {
+                transform: scale(10);
+                opacity: 0;
+                bottom: 100vh;
+            }
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .calculator {
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            padding: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .results p {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Numbers</h1>
+        <div class="box">
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <h1>Calculator for First N Natural Numbers</h1>
+        
+        <div class="calculator">
+            <h2>Enter a Number</h2>
+            <input type="number" id="numberInput" placeholder="Enter a positive integer">
+            <button onclick="calculate()">Calculate</button>
+        </div>
+
+        <div class="results">
+            <p id="factorialResult"></p>
+            <p id="sumResult"></p>
+            <p id="averageResult"></p>
+        </div>
+    </div>
+    <script>
+        function calculate() {
+            const n = parseInt(document.getElementById('numberInput').value);
+
+            if (isNaN(n) || n < 1) {
+                alert("Please enter a positive integer.");
+                return;
+            }
+
+            // Factorial using a while loop
+            let factorial = 1;
+            let i = 1;
+            while (i <= n) {
+                factorial *= i;
+                i++;
+            }
+
+            // Sum of first N natural numbers using a do-while loop
+            let sum = 0;
+            let j = 1;
+            do {
+                sum += j;
+                j++;
+            } while (j <= n);
+
+            // Average of first N natural numbers using a for loop
+            let total = 0;
+            for (let k = 1; k <= n; k++) {
+                total += k;
+            }
+            const average = total / n;
+
+            // Display the results
+            document.getElementById('factorialResult').innerText = `Factorial of ${n} is: ${factorial}`;
+            document.getElementById('sumResult').innerText = `Sum of first ${n} natural numbers is: ${sum}`;
+            document.getElementById('averageResult').innerText = `Average of first ${n} natural numbers is: ${average}`;
+        }
+    </script>
+</body>
+</html>
